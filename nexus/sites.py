@@ -85,9 +85,9 @@ class NexusSite(object):
 
     def get_urls(self):
         try:
-            from django.conf.urls import patterns, url, include
+            from django.conf.urls import url, include
         except ImportError:  # Django<=1.4
-            from django.conf.urls.defaults import patterns, url, include
+            from django.conf.urls.defaults import url, include
 
         base_urls = [
             url(r'^media/(?P<module>[^/]+)/(?P<path>.+)$', self.media, name='media'),
@@ -100,9 +100,9 @@ class NexusSite(object):
             url(r'^', include(base_urls))
         ]
         for namespace, module in self.get_modules():
-            urlpatterns += patterns('',
+            urlpatterns += [
                 url(r'^%s/' % namespace, include(module.urls)),
-            )
+            ]
 
         return urlpatterns
 
