@@ -27,11 +27,10 @@ class NexusModule(object):
     # list of active sites within process
     _globals = {}
 
-    def __init__(self, site, category=None, name=None, app_name=None):
+    def __init__(self, site, category=None, name=None):
         self.category = category
         self.site = site
         self.name = name
-        self.app_name = app_name
 
         # Set up default logging for this module
         if not self.logger_name:
@@ -118,12 +117,10 @@ class NexusModule(object):
         return patterns('')
 
     def urls(self):
-        if self.app_name and self.name:
-            return self.get_urls(), self.app_name, self.name
+        if self.name:
+            return self.get_urls(), self.name
         return self.get_urls()
-
     urls = property(urls)
-
 
     def get_trail(self, request):
         return [
@@ -132,8 +129,8 @@ class NexusModule(object):
 
     def get_home_url(self, request):
         if self.home_url:
-            if self.app_name:
-                home_url_name = '%s:%s' % (self.app_name, self.home_url)
+            if self.name:
+                home_url_name = '%s:%s' % (self.name, self.home_url)
             else:
                 home_url_name = self.home_url
 
