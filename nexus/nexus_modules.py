@@ -151,7 +151,7 @@ def make_admin_module(admin_site, name=None):
             return self.admin_site.get_urls()
 
         def urls(self):
-            return self.admin_site.urls[0], self.name
+            return self.admin_site.urls[0], self.name, self.name
 
         urls = property(urls)
 

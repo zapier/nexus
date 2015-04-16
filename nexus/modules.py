@@ -118,7 +118,7 @@ class NexusModule(object):
 
     def urls(self):
         if self.name:
-            return self.get_urls(), self.name
+            return self.get_urls(), self.name, self.name
         return self.get_urls()
     urls = property(urls)
 
