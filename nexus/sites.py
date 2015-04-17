@@ -97,7 +97,7 @@ class NexusSite(object):
         ]
 
         urlpatterns = [
-            url(r'^', include(base_urls))
+            url(r'^', include(base_urls, namespace=self.name, app_name=self.name))
         ]
         for namespace, module in self.get_modules():
             urlpatterns += [
