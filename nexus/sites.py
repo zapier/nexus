@@ -56,14 +56,13 @@ except ImportError:  # must be < Django 1.3
 
 
 class NexusSite(object):
-    def __init__(self, name=None, app_name='nexus'):
+    def __init__(self, name=None):
         self._registry = {}
         self._categories = SortedDict()
         if name is None:
             self.name = 'nexus'
         else:
             self.name = name
-        self.app_name = app_name
 
     def register_category(self, category, label, index=None):
         if index:
@@ -76,7 +75,7 @@ class NexusSite(object):
         if not namespace:
             namespace = module.get_namespace()
         if namespace:
-            module.app_name = module.name = namespace
+            module.name = namespace
         self._registry[namespace] = (module, category)
         return module
 
@@ -86,25 +85,24 @@ class NexusSite(object):
 
     def get_urls(self):
         try:
-            from django.conf.urls import patterns, url, include
+            from django.conf.urls import url, include
         except ImportError:  # Django<=1.4
-            from django.conf.urls.defaults import patterns, url, include
+            from django.conf.urls.defaults import url, include
 
-        base_urls = patterns('',
+        base_urls = [
             url(r'^media/(?P<module>[^/]+)/(?P<path>.+)$', self.media, name='media'),
-
             url(r'^$', self.as_view(self.dashboard), name='index'),
             url(r'^login/$', self.login, name='login'),
-            url(r'^logout/$', self.as_view(self.logout), name='logout'),
-        ), self.app_name, self.name
+            url(r'^logout/$', self.as_view(self.logout), name='logout')
+        ]
 
-        urlpatterns = patterns('',
-            url(r'^', include(base_urls)),
-        )
+        urlpatterns = [
+            url(r'^', include(base_urls, namespace=self.name, app_name=self.name))
+        ]
         for namespace, module in self.get_modules():
-            urlpatterns += patterns('',
-                url(r'^%s/' % namespace, include(module.urls)),
-            )
+            urlpatterns += [
+                url(r'^%s/' % namespace, include(module.urls))
+            ]
 
         return urlpatterns
 
