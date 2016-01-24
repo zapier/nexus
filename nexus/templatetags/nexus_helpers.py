@@ -1,5 +1,6 @@
+from collections import OrderedDict
+
 from django import template
-from django.utils.datastructures import SortedDict
 
 import nexus
 from nexus import conf
@@ -22,7 +23,7 @@ def show_navigation(context):
     site = context.get('nexus_site', NexusModule.get_global('site'))
     request = NexusModule.get_request()
 
-    category_link_set = SortedDict([(k, {
+    category_link_set = OrderedDict([(k, {
         'label': v,
         'links': [],
     }) for k, v in site.get_categories()])
